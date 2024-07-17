@@ -1,97 +1,59 @@
+/* App.css */
+
 .App {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  background-color: #f7f7f7;
   font-family: Arial, sans-serif;
-}
-
-.chat-container {
-  margin: 0 20px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.chat-item {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 0 auto;
   padding: 20px;
+  text-align: center;
+}
+
+h1 {
   margin-bottom: 20px;
-  width: 100%;
-  max-width: 600px;
 }
 
-.user-input, .story-name, .story-output {
-  margin-bottom: 10px;
-}
-
-.image-output img {
-  max-width: 100%;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-
-.chat-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
-.chat-actions button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.chat-actions button:nth-child(2) {
-  background-color: #ff5252;
-}
-
-.chat-actions button:nth-child(3) {
-  background-color: #ffc107;
-}
-
-.chat-actions button:nth-child(4) {
-  background-color: #6c757d;
-}
-
-.chat-actions button svg {
-  margin-right: 5px;
+p {
+  font-size: 16px;
+  color: #333;
 }
 
 .input-container {
-  display: flex;
-  margin: 20px 0;
-  width: 100%;
-  max-width: 600px;
+  margin-bottom: 20px;
 }
 
-input {
-  flex: 1;
+textarea {
+  width: 100%;
   padding: 10px;
-  margin-right: 10px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
+
+input[type="file"] {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.highlight {
+  font-weight: bold;
+  padding: 0 4px; /* Padding around the text */
+  border-radius: 3px; /* Slightly rounded corners */
+}
+
 
 button {
-  padding: 10px;
-  background-color: #28a745;
-  color: white;
+  background-color: #1b974f;
+  color: #fff;
   border: none;
-  border-radius: 5px;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
+  font-size: 16px;
 }
 
 button:disabled {
@@ -99,6 +61,122 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button svg {
-  margin-right: 5px;
+button:hover:not(:disabled) {
+  background-color: #54be80;
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(8, 105, 57, 0.5);
+}
+
+/* Styles for specific buttons */
+.regenerate-story-btn {
+  background-color: #28a745; /* Green color */
+}
+
+.regenerate-story-btn:hover {
+  background-color: #218838; /* Darker green */
+}
+
+.regenerate-story-btn:focus {
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5); /* Green focus outline */
+}
+
+.regenerate-image-btn {
+  background-color: #007bff; /* Blue color */
+}
+
+.regenerate-image-btn:hover {
+  background-color: #0056b3; /* Darker blue */
+}
+
+.regenerate-image-btn:focus {
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Blue focus outline */
+}
+
+.download-pdf-btn {
+  background-color: #ffc107; /* Yellow color */
+}
+
+.download-pdf-btn:hover {
+  background-color: #e0a800; /* Darker yellow */
+}
+
+.download-pdf-btn:focus {
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.5); /* Yellow focus outline */
+}
+
+.story-container {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.story-content {
+  margin-bottom: 20px;
+}
+
+.paragraph-container {
+  margin-bottom: 20px;
+}
+
+.paragraph-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 10px;
+}
+
+.description-container {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.description-label {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.description-text {
+  font-size: 16px;
+  color: #555;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+/* Styles for Clear Image button */
+.clear-image-btn {
+  background-color: #dc3545; /* Red color */
+}
+
+.clear-image-btn:hover {
+  background-color: #c82333; /* Darker red */
+}
+
+.clear-image-btn:focus {
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.5); /* Red focus outline */
+}
+
+/* Media Queries for responsiveness */
+@media (max-width: 600px) {
+  .App {
+    padding: 10px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  textarea {
+    font-size: 14px;
+  }
+
+  p {
+    font-size: 14px;
+  }
 }
