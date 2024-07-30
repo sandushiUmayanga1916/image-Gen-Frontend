@@ -62,7 +62,7 @@ button:disabled {
 }
 
 button:hover:not(:disabled) {
-  background-color: #54be80;
+  color: #54be80;
 }
 
 button:focus {
@@ -70,6 +70,43 @@ button:focus {
   box-shadow: 0 0 0 2px rgba(8, 105, 57, 0.5);
 }
 
+.table-of-contents {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.table-of-contents h3 {
+  margin-top: 0;
+  color: #007bff;
+}
+
+.table-of-contents ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.table-of-contents li {
+  margin-bottom: 10px;
+}
+
+.table-of-contents button {
+  color: #007bff;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.table-of-contents button:hover {
+  text-decoration: underline;
+}
+
+.table-of-contents button:focus {
+  outline: none;
+}
 /* Styles for specific buttons */
 .regenerate-story-btn {
   background-color: #28a745; /* Green color */
