@@ -38,6 +38,36 @@ input[type="file"] {
   box-sizing: border-box;
 }
 
+label {
+  margin-bottom: 8px; 
+  color: #333; 
+  font-size: 16px;
+}
+
+input[type="number"] {
+  padding: 8px; /* Space inside the input field */
+  margin-bottom: 16px; /* Space below the input field */
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 4px; /* Rounded corners */
+  box-sizing: border-box; /* Ensures padding and border are included in width */
+  font-size: 16px; /* Size of the text inside the input */
+}
+
+input[type="number"]:focus {
+  border-color: #007bff; /* Blue border on focus */
+  outline: none; /* Removes default focus outline */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue shadow on focus */
+}
+
+.container {
+  max-width: 400px; /* Maximum width of the container */
+  margin: 0 auto; /* Center the container */
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
 .highlight {
   font-weight: bold;
   padding: 0 4px; /* Padding around the text */
@@ -70,42 +100,15 @@ button:focus {
   box-shadow: 0 0 0 2px rgba(8, 105, 57, 0.5);
 }
 
-.table-of-contents {
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #fff;
-  border-radius: 4px;
+.clear-prompt{
+  background-color: #dc3545;
+}
+.clear-prompt:hover {
+  background-color: #c82333; /* Darker red */
 }
 
-.table-of-contents h3 {
-  margin-top: 0;
-  color: #007bff;
-}
-
-.table-of-contents ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.table-of-contents li {
-  margin-bottom: 10px;
-}
-
-.table-of-contents button {
-  color: #007bff;
-  background: none;
-  border: none;
-  padding: 0;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.table-of-contents button:hover {
-  text-decoration: underline;
-}
-
-.table-of-contents button:focus {
-  outline: none;
+.clear-prompt:focus {
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.5); /* Red focus outline */
 }
 /* Styles for specific buttons */
 .regenerate-story-btn {

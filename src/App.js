@@ -11,7 +11,11 @@ import {
   faEye,
   faSpinner,
   faBook,
+  faUpload,
+  faExclamationTriangle,
+  faSync,
   faDownload,
+  faLink,
 } from "@fortawesome/free-solid-svg-icons";
 import "./App.css";
 
@@ -36,9 +40,50 @@ const App = () => {
   const [generatingStory, setGeneratingStory] = useState(false);
   const [isImageGeneratedStory, setIsImageGeneratedStory] = useState(false);
   const fileInputRef = useRef(null);
-  const [creatingFlipbook, setCreatingFlipbook] = useState(false);
-  const [flipbookUrl, setFlipbookUrl] = useState(null);
-  const [downloadUrl, setDownloadUrl] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pdfFile, setPdfFile] = useState(null);
+  const [flipbookUrl, setFlipbookUrl] = useState("");
+  const [isCreatingFlipbook, setIsCreatingFlipbook] = useState(false);
+  const [flipbookError, setFlipbookError] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+
+  const MAX_RETRIES = 5;
+const RETRY_DELAY = 10000; // 10 seconds
+
+const handleGeneratePreview = async () => {
+  setIsGenerating(true);
+  setError(null);
+
+  try {
+    const response = await axios.post('http://localhost:4000/api/generate-pdf-preview', {
+      storyData,
+      imageUrls,
+      storyName,
+    });
+
+    const { previewUrl } = response.data;
+    setPreviewUrl(previewUrl);
+  } catch (error) {
+    console.error('Error generating PDF preview:', error);
+    setError('Failed to generate PDF preview. Please try again.');
+  } finally {
+    setIsGenerating(false);
+  }
+};
+
+const handleDownload = () => {
+  if (previewUrl) {
+    const link = document.createElement('a');
+    link.href = previewUrl;
+    link.download = `${storyName}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+};
 
   const handleInputChange = (e) => {
     setUserInput(e.target.value);
@@ -81,16 +126,26 @@ const App = () => {
   };
 
   const handleClear = () => {
+    // Clear input fields
     setUserInput("");
-    setStory("");
+    setNumChapters(1); // Reset to default or initial value
+    setMaxWordsPerChapter(100); // Reset to default or initial value
+
+    // Clear story data and related states
+    setStoryData({});
+    setStoryName("");
     setSummary("");
     setStartImageUrl(null);
     setMiddleImageUrl(null);
     setEndImageUrl(null);
-    setStoryName("");
+    setIsImageGeneratedStory(false);
+
+    // Clear any errors or uploaded image URLs
     setError("");
     setUploadedImageUrl("");
-    setIsImageGeneratedStory(false);
+
+    // Optional: If you want to reset loading state
+    setLoading(false);
   };
 
   const handleDownloadPDF = async () => {
@@ -214,27 +269,118 @@ const App = () => {
       setGeneratingStory(false);
     }
   };
-  const handleCreateFlipbook = async () => {
-    if (!storyData) return;
 
-    setCreatingFlipbook(true);
+  const createFlipbook = async (pdfFile) => {
+    const formData = new FormData();
+    formData.append('pdf', pdfFile);
+  
+    try {
+      const response = await axios.post('http://localhost:4000/api/create-flipbook-from-pdf', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      if (response.data && response.data.flipbookId) {
+        return await pollFlipbookStatus(response.data.flipbookId);
+      } else {
+        throw new Error('Flipbook ID not found in response');
+      }
+    } catch (error) {
+      console.error('Error creating flipbook:', error);
+      throw error;
+    }
+  };
+  
+  const pollFlipbookStatus = async (flipbookId) => {
+    for (let i = 0; i < MAX_RETRIES; i++) {
+      try {
+        const statusResponse = await axios.get(`http://localhost:4000/api/check-flipbook-status/${flipbookId}`);
+        
+        if (statusResponse.data.status === 'Ready') {
+          return statusResponse.data.details.publication.canonicalLink;
+        } else if (statusResponse.data.status === 'Error') {
+          throw new Error('Flipbook creation failed');
+        }
+        
+        // If not ready, wait before next retry
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+      } catch (error) {
+        console.error('Error checking flipbook status:', error);
+        if (i === MAX_RETRIES - 1) throw error;
+      }
+    }
+    throw new Error('Flipbook creation timed out');
+  };
+  
+  const handlePdfFileChange = (e) => {
+    setPdfFile(e.target.files[0]);
+    setFlipbookError('');
+    setRetryCount(0);
+  };
+
+const handleCreateFlipbook = async () => {
+    if (!previewUrl) {
+      setFlipbookError('Preview URL is not available.');
+      return;
+    }
+
+    setIsCreatingFlipbook(true);
+    setFlipbookError('');
+
+    try {
+      const response = await axios.post('http://localhost:4000/api/create-flipbook-from-url', { previewUrl });
+
+      if (response.data && response.data.flipbookUrl) {
+        setFlipbookUrl(response.data.flipbookUrl);
+        setFlipbookError('');
+      } else {
+        throw new Error('Flipbook URL not found in response');
+      }
+    } catch (error) {
+      console.error('Error in flipbook creation process:', error);
+      setFlipbookError(error.message || 'An error occurred while creating the flipbook.');
+    } finally {
+      setIsCreatingFlipbook(false);
+    }
+  };
+
+  const handleRetryCreateFlipbook = () => {
+    setRetryCount((prevCount) => prevCount + 1);
+    handleCreateFlipbook();
+  };
+
+  const handleViewFlipbook = () => {
+    window.open(flipbookUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleGeneratePDF = async () => {
+    if (!storyData || !storyName) return;
+    setIsLoading(true);
+
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/create-flipbook",
+        "http://localhost:4000/api/generate-pdf",
         {
           storyData,
           imageUrls,
           storyName,
-        }
+        },
+        { responseType: "blob" }
       );
 
-      setFlipbookUrl(response.data.flipbookUrl);
-      setDownloadUrl(response.data.downloadUrl);
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "story.pdf";
+      link.click();
+      URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Error creating flipbook:", error);
-      // Handle error (e.g., show an error message to the user)
+      console.error("Error generating PDF:", error);
+      setError("An error occurred while generating the PDF. Please try again.");
     } finally {
-      setCreatingFlipbook(false);
+      setIsLoading(false);
     }
   };
 
@@ -416,36 +562,94 @@ const App = () => {
                 </div>
               );
             })}
-          </div>
-          <button
-            onClick={handleCreateFlipbook}
-            disabled={creatingFlipbook}
-            className="create-flipbook-btn"
-          >
-            {creatingFlipbook ? (
-              <FontAwesomeIcon icon={faSpinner} spin />
-            ) : (
-              <FontAwesomeIcon icon={faBook} />
-            )}
-            Create Flipbook
+<div className="flipbook-creator">
+      <button
+        onClick={handleCreateFlipbook}
+        disabled={isCreatingFlipbook || !previewUrl}
+      >
+        {isCreatingFlipbook ? (
+          <>
+            <FontAwesomeIcon icon={faSpinner} spin /> Creating Flipbook...
+          </>
+        ) : (
+          <>
+            <FontAwesomeIcon icon={faBook} /> Create Flipbook
+          </>
+        )}
+      </button>
+
+      {flipbookUrl && !flipbookError && (
+        <div className="flipbook-link-container">
+          <p>Flipbook created successfully!</p>
+          <button onClick={handleViewFlipbook}>
+            <FontAwesomeIcon icon={faEye} /> View Flipbook
           </button>
+        </div>
+      )}
 
-          {flipbookUrl && (
-            <a
-              href={flipbookUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="preview-flipbook-btn"
+      {flipbookError && (
+        <div className="flipbook-error-container">
+          <p className="error-message">
+            <FontAwesomeIcon icon={faExclamationTriangle} /> {flipbookError}
+          </p>
+          {retryCount < 3 && (
+            <button onClick={handleRetryCreateFlipbook}>
+              <FontAwesomeIcon icon={faSync} /> Retry Creating Flipbook
+            </button>
+          )}
+          {retryCount >= 3 && (
+            <p>
+              Maximum retry attempts reached. Please try again later or
+              contact support.
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+            <button
+              onClick={handleGeneratePDF}
+              className="download-pdf-btn"
+              disabled={isLoading}
             >
-              <FontAwesomeIcon icon={faEye} /> Preview Flipbook
-            </a>
+              {isLoading ? (
+                <>
+                  <FontAwesomeIcon icon={faSpinner} spin /> Generating PDF...
+                </>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faFilePdf} /> Generate & Download PDF
+                </>
+              )}
+            </button>
+            <div className="pdf-preview-container">
+        <button onClick={handleGeneratePreview} disabled={isGenerating}>
+          {isGenerating ? (
+            <>
+              <FontAwesomeIcon icon={faSpinner} spin /> Generating Preview...
+            </>
+          ) : (
+            <>
+              <FontAwesomeIcon icon={faEye} /> Preview PDF
+            </>
           )}
-
-          {downloadUrl && (
-            <a href={downloadUrl} download className="download-flipbook-btn">
-              <FontAwesomeIcon icon={faDownload} /> Download Flipbook
-            </a>
-          )}
+        </button>
+        
+        {previewUrl && (
+          <div className="preview-actions">
+            <iframe src={previewUrl} width="100%" height="500px" title="PDF Preview" />
+            <button onClick={handleDownload}>
+              <FontAwesomeIcon icon={faDownload} /> Download PDF
+            </button>
+            <div className="preview-url">
+              <FontAwesomeIcon icon={faLink} /> Preview URL: 
+              <a href={previewUrl} target="_blank" rel="noopener noreferrer">{previewUrl}</a>
+            </div>
+          </div>
+        )}
+        
+        {error && <p className="error-message">{error}</p>}
+      </div>
+          </div>
         </div>
       )}
       {error && <p className="error-message">{error}</p>}
