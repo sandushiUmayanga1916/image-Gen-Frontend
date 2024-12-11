@@ -58,7 +58,7 @@ const handleGeneratePreview = async () => {
   setError(null);
 
   try {
-    const response = await axios.post('http://backendgpt.enfection.com/api/generate-pdf-preview', {
+    const response = await axios.post('http://localhost:4000/api/generate-pdf-preview', {
       storyData,
       imageUrls,
       storyName,
@@ -96,7 +96,7 @@ const handleDownload = () => {
     setIsImageGeneratedStory(false);
 
     try {
-      const response = await axios.post("http://backendgpt.enfection.com/api/chat", {
+      const response = await axios.post("http://localhost:4000/api/chat", {
         message: userInput,
         numChapters,
         maxWordsPerChapter,
@@ -153,7 +153,7 @@ const handleDownload = () => {
 
     try {
       const response = await axios.post(
-        "http://backendgpt.enfection.com/api/pdf",
+        "http://localhost:4000/api/pdf",
         {
           storyData,
           imageUrls,
@@ -179,7 +179,7 @@ const handleDownload = () => {
   const handleRegenerateStory = async () => {
     try {
       const response = await axios.post(
-        "http://backendgpt.enfection.com/api/regenerate-story",
+        "http://localhost:4000/api/regenerate-story",
         { story, regeneratePrompt: userInput }
       );
       setStory(response.data.newStory);
@@ -196,7 +196,7 @@ const handleDownload = () => {
 
     try {
       const response = await axios.post(
-        "http://backendgpt.enfection.com/api/regenerate-image",
+        "http://localhost:4000/api/regenerate-image",
         { summary }
       );
       const { newImageUrl } = response.data;
@@ -243,7 +243,7 @@ const handleDownload = () => {
 
     try {
       const response = await axios.post(
-        "http://backendgpt.enfection.com/api/generate-story-from-image",
+        "http://localhost:4000/api/generate-story-from-image",
         formData,
         {
           headers: {
@@ -275,7 +275,7 @@ const handleDownload = () => {
     formData.append('pdf', pdfFile);
   
     try {
-      const response = await axios.post('http://backendgpt.enfection.com/api/create-flipbook-from-pdf', formData, {
+      const response = await axios.post('http://localhost:4000/api/create-flipbook-from-pdf', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -295,7 +295,7 @@ const handleDownload = () => {
   const pollFlipbookStatus = async (flipbookId) => {
     for (let i = 0; i < MAX_RETRIES; i++) {
       try {
-        const statusResponse = await axios.get(`http://backendgpt.enfection.com/api/check-flipbook-status/${flipbookId}`);
+        const statusResponse = await axios.get(`http://localhost:4000/api/check-flipbook-status/${flipbookId}`);
         
         if (statusResponse.data.status === 'Ready') {
           return statusResponse.data.details.publication.canonicalLink;
@@ -329,7 +329,7 @@ const handleCreateFlipbook = async () => {
     setFlipbookError('');
 
     try {
-      const response = await axios.post('http://backendgpt.enfection.com/api/create-flipbook-from-url', { previewUrl });
+      const response = await axios.post('http://localhost:4000/api/create-flipbook-from-url', { previewUrl });
 
       if (response.data && response.data.flipbookUrl) {
         setFlipbookUrl(response.data.flipbookUrl);
@@ -360,7 +360,7 @@ const handleCreateFlipbook = async () => {
 
     try {
       const response = await axios.post(
-        "http://backendgpt.enfection.com/api/generate-pdf",
+        "http://localhost:4000/api/generate-pdf",
         {
           storyData,
           imageUrls,

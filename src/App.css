@@ -1,222 +1,205 @@
-/* App.css */
+/* Creative Story Generator Styles */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Caveat:wght@400;700&display=swap');
+
+:root {
+  --primary-color: #6a11cb;
+  --secondary-color: #2575fc;
+  --accent-color: #ff6b6b;
+  --background-color: #f4f4f9;
+  --text-color: #2c3e50;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+body {
+  background: linear-gradient(135deg, var(--background-color), #e9ecef);
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+}
 
 .App {
-  font-family: Arial, sans-serif;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-  text-align: center;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px var(--shadow-color);
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.App::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(106, 17, 203, 0.1), transparent 50%);
+  transform: rotate(-45deg);
+  z-index: -1;
 }
 
 h1 {
-  margin-bottom: 20px;
-}
-
-p {
-  font-size: 16px;
-  color: #333;
-}
-
-.input-container {
-  margin-bottom: 20px;
-}
-
-textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-input[type="file"] {
-  margin-top: 10px;
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-label {
-  margin-bottom: 8px; 
-  color: #333; 
-  font-size: 16px;
-}
-
-input[type="number"] {
-  padding: 8px; /* Space inside the input field */
-  margin-bottom: 16px; /* Space below the input field */
-  border: 1px solid #ccc; /* Light gray border */
-  border-radius: 4px; /* Rounded corners */
-  box-sizing: border-box; /* Ensures padding and border are included in width */
-  font-size: 16px; /* Size of the text inside the input */
-}
-
-input[type="number"]:focus {
-  border-color: #007bff; /* Blue border on focus */
-  outline: none; /* Removes default focus outline */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue shadow on focus */
-}
-
-.container {
-  max-width: 400px; /* Maximum width of the container */
-  margin: 0 auto; /* Center the container */
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px; 
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-family: 'Caveat', cursive;
+  font-size: 3.5rem;
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px var(--shadow-color);
 }
 
 .highlight {
-  font-weight: bold;
-  padding: 0 4px; /* Padding around the text */
-  border-radius: 3px; /* Slightly rounded corners */
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 2px 8px;
+  border-radius: 5px;
+  font-weight: 600;
 }
 
+textarea, input[type="file"], input[type="number"] {
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid var(--secondary-color);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 16px;
+  width: 100%;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+textarea:focus, input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2);
+}
 
 button {
-  background-color: #1b974f;
-  color: #fff;
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  color: white;
   border: none;
-  padding: 10px 20px;
-  margin: 5px;
-  border-radius: 4px;
+  padding: 12px 24px;
+  margin: 8px;
+  border-radius: 30px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
-  font-size: 16px;
+  position: relative;
+  overflow: hidden;
+  transform: perspective(1px) translateZ(0);
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.3s ease-out;
+}
+
+button:hover::before {
+  transform: scaleX(1);
 }
 
 button:disabled {
-  background-color: #ccc;
+  background: linear-gradient(45deg, #a0a0a0, #c0c0c0);
   cursor: not-allowed;
 }
 
-button:hover:not(:disabled) {
-  color: #54be80;
-}
-
-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(8, 105, 57, 0.5);
-}
-
-.clear-prompt{
-  background-color: #dc3545;
-}
-.clear-prompt:hover {
-  background-color: #c82333; /* Darker red */
-}
-
-.clear-prompt:focus {
-  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.5); /* Red focus outline */
-}
-/* Styles for specific buttons */
-.regenerate-story-btn {
-  background-color: #28a745; /* Green color */
-}
-
-.regenerate-story-btn:hover {
-  background-color: #218838; /* Darker green */
-}
-
-.regenerate-story-btn:focus {
-  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5); /* Green focus outline */
-}
-
-.regenerate-image-btn {
-  background-color: #007bff; /* Blue color */
-}
-
-.regenerate-image-btn:hover {
-  background-color: #0056b3; /* Darker blue */
-}
-
-.regenerate-image-btn:focus {
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Blue focus outline */
-}
-
-.download-pdf-btn {
-  background-color: #ffc107; /* Yellow color */
-}
-
-.download-pdf-btn:hover {
-  background-color: #e0a800; /* Darker yellow */
-}
-
-.download-pdf-btn:focus {
-  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.5); /* Yellow focus outline */
-}
-
 .story-container {
-  margin-top: 20px;
-  text-align: left;
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 25px var(--shadow-color);
 }
 
-.story-content {
+.chapter-container {
+  background: rgba(245, 245, 245, 0.5);
+  border-radius: 10px;
+  padding: 20px;
   margin-bottom: 20px;
+  border-left: 5px solid var(--primary-color);
 }
 
-.paragraph-container {
-  margin-bottom: 20px;
-}
-
-.paragraph-image {
+.chapter-image {
   max-width: 100%;
-  height: auto;
-  display: block;
-  margin-top: 10px;
+  border-radius: 15px;
+  box-shadow: 0 8px 15px var(--shadow-color);
+  transition: transform 0.3s ease;
 }
 
-.description-container {
-  margin-top: 20px;
-  text-align: left;
-}
-
-.description-label {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.description-text {
-  font-size: 16px;
-  color: #555;
+.chapter-image:hover {
+  transform: scale(1.02);
 }
 
 .error-message {
-  color: red;
-  font-weight: bold;
-  margin-top: 20px;
+  color: var(--accent-color);
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid var(--accent-color);
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  font-weight: 600;
 }
 
-/* Styles for Clear Image button */
-.clear-image-btn {
-  background-color: #dc3545; /* Red color */
-}
-
-.clear-image-btn:hover {
-  background-color: #c82333; /* Darker red */
-}
-
-.clear-image-btn:focus {
-  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.5); /* Red focus outline */
-}
-
-/* Media Queries for responsiveness */
-@media (max-width: 600px) {
+/* Responsive Adjustments */
+@media (max-width: 768px) {
   .App {
-    padding: 10px;
+    margin: 15px;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
   }
 
   button {
     font-size: 14px;
-    padding: 8px 16px;
+    padding: 10px 18px;
   }
+}
 
-  textarea {
-    font-size: 14px;
-  }
+/* Subtle Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-  p {
-    font-size: 14px;
-  }
+.story-container, .chapter-container {
+  animation: fadeIn 0.6s ease;
+}
+
+/* PDF Preview Styles */
+.pdf-preview-container {
+  background: rgba(240, 240, 240, 0.5);
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.preview-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.preview-url {
+  background: rgba(200, 200, 200, 0.2);
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
