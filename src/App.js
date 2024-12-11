@@ -52,13 +52,14 @@ const App = () => {
 
   const MAX_RETRIES = 5;
 const RETRY_DELAY = 10000; // 10 seconds
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://backend-gpt.enfection.com/api"; // Use env var for flexibility
 
 const handleGeneratePreview = async () => {
   setIsGenerating(true);
   setError(null);
 
   try {
-    const response = await axios.post('http://backend-gpt.enfection.com/api/generate-pdf-preview', {
+    const response = await axios.post(`${API_BASE_URL}/generate-pdf-preview`, {
       storyData,
       imageUrls,
       storyName,
@@ -96,7 +97,7 @@ const handleDownload = () => {
     setIsImageGeneratedStory(false);
 
     try {
-      const response = await axios.post("http://backend-gpt.enfection.com/api/chat", {
+      const response = await axios.post(`${API_BASE_URL}/chat`, {
         message: userInput,
         numChapters,
         maxWordsPerChapter,
@@ -152,8 +153,8 @@ const handleDownload = () => {
     if (!storyData || !storyName) return;
 
     try {
-      const response = await axios.post(
-        "http://backend-gpt.enfection.com/api/pdf",
+      const response = await axios.post(`${API_BASE_URL}/pdf`
+      ,
         {
           storyData,
           imageUrls,
@@ -179,7 +180,7 @@ const handleDownload = () => {
   const handleRegenerateStory = async () => {
     try {
       const response = await axios.post(
-        "http://backend-gpt.enfection.com/api/regenerate-story",
+       `${API_BASE_URL}/regenerate-story`,
         { story, regeneratePrompt: userInput }
       );
       setStory(response.data.newStory);
@@ -196,7 +197,7 @@ const handleDownload = () => {
 
     try {
       const response = await axios.post(
-        "http://backend-gpt.enfection.com/api/regenerate-image",
+        `${API_BASE_URL}/regenerate-image`,
         { summary }
       );
       const { newImageUrl } = response.data;
@@ -243,7 +244,7 @@ const handleDownload = () => {
 
     try {
       const response = await axios.post(
-        "http://backend-gpt.enfection.com/api/generate-story-from-image",
+        `${API_BASE_URL}/generate-story-from-image`,
         formData,
         {
           headers: {
@@ -275,7 +276,7 @@ const handleDownload = () => {
     formData.append('pdf', pdfFile);
   
     try {
-      const response = await axios.post('http://backend-gpt.enfection.com/api/create-flipbook-from-pdf', formData, {
+      const response = await axios.post(`${API_BASE_URL}/create-flipbook-from-pdf`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -360,7 +361,7 @@ const handleCreateFlipbook = async () => {
 
     try {
       const response = await axios.post(
-        "http://backend-gpt.enfection.com/api/generate-pdf",
+        `${API_BASE_URL}/generate-pdf`,
         {
           storyData,
           imageUrls,
